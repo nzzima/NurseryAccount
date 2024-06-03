@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataPetDatabaseService implements PetDatabaseService<Pet> {
-    private String url = "jdbc:postgresql://localhost:5432/postgres";
+    private String url = "jdbc:postgresql://localhost:5432/human_friends";
     private  String user = "postgres";
     private  String password = "postgres";
     private  Creator creator;
@@ -27,7 +27,7 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
         List<Pet> farm = new ArrayList<Pet>();
         Pet pet;
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            SQLstr = "SELECT GenusId, Id, PetName, Birthday FROM pet_list ORDER BY Id";
+            SQLstr = "select genus_id, id, name, birthday from pets";
             PreparedStatement statement = con.prepareStatement(SQLstr);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -39,7 +39,6 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
                 pet = creator.createPet(type, name, birthday);
                 pet.setPet_id(id);
                 farm.add(pet);
-
             }
             return farm;
         } catch (SQLException exception) {
@@ -52,7 +51,7 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
     public Pet getById(Integer petId) {
         Pet pet = null;
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            SQLstr = "SELECT GenusId, Id, PetName, Birthday FROM pet_list WHERE Id = ?";
+            SQLstr = "SELECT GenusId, Id, PetName, Birthday FROM pets WHERE Id = ?";
             PreparedStatement prepSt = con.prepareStatement(SQLstr);
             prepSt.setInt(1, petId);
             resultSet = prepSt.executeQuery();
