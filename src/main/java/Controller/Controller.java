@@ -8,6 +8,8 @@ import Service.DataPetDatabaseService;
 import Service.PetDatabaseService;
 import View.*;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -24,15 +26,16 @@ public class Controller {
         this.validator = new Validator();
     }
 
-    public void createPet(PetType type) {
-
-        String[] data = new String[] { view.getName(), view.getBirthday() };
+    public void createPet(PetType type) throws UnsupportedEncodingException {
+        byte bytes[] = view.getName().getBytes(StandardCharsets.UTF_8);
+        String right_name = new String(bytes, StandardCharsets.UTF_8);
+        String[] data = new String[] { right_name, view.getBirthday() };
         validator.validate(data);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate birthday = LocalDate.parse(data[1], formatter);
         try {
             int res = petDatabaseService.create(creator.createPet(type, data[0], birthday));
-            view.showMessage(String.format("%d запись добавлена", res));
+            view.showMessage(String.format("%d Запись добавлена", res));
         } catch (RuntimeException e) {
             view.showMessage(e.getMessage());
         }

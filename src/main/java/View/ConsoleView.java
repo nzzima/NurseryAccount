@@ -3,7 +3,6 @@ package View;
 import Model.Pet;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class ConsoleView implements View {
@@ -31,7 +30,7 @@ public class ConsoleView implements View {
             System.out.println("список пуст");
         else {
             if (cl == Pet.class)
-                System.out.println("\n          Наши питомцы:");
+                System.out.println("\nПитомцы:");
             for (Object item : list) {
                 System.out.println(item);
             }

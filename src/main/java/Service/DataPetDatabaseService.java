@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,14 +26,14 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
         List<Pet> farm = new ArrayList<Pet>();
         Pet pet;
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            SQLstr = "select genus_id, id, name, birthday from pets";
+            SQLstr = "select name, birthday, genus_id from pets";
             PreparedStatement statement = con.prepareStatement(SQLstr);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                PetType type = PetType.getType(resultSet.getInt(1));
-                Integer id = resultSet.getInt(2);
-                String name = resultSet.getString(3);
-                LocalDate birthday = resultSet.getDate(4).toLocalDate();
+                Integer id = resultSet.getInt(3);
+                String name = resultSet.getString(1);
+                LocalDate birthday = resultSet.getDate(2).toLocalDate();
+                PetType type = PetType.getType(resultSet.getInt(3));
 
                 pet = creator.createPet(type, name, birthday);
                 pet.setPet_id(id);
@@ -76,12 +75,12 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
     public Integer create(Pet pet) {
         Integer rows = null;
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            SQLstr = "INSERT INTO pet_list (PetName, Birthday, GenusId) SELECT ?, ?, (SELECT Id FROM pet_types WHERE Genus_name = ?)";
+            SQLstr = "INSERT INTO pets (name, birthday, genus_id) SELECT ?, ?, ?";
             PreparedStatement prepSt = con.prepareStatement(SQLstr);
 
             prepSt.setString(1, pet.getName());
             prepSt.setDate(2, Date.valueOf(pet.getBirthday()));
-            prepSt.setString(3, pet.getClass().getSimpleName());
+            prepSt.setInt(3, pet.getPet_id());
 
             rows = prepSt.executeUpdate();
             return rows;
@@ -95,7 +94,7 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
     public Integer update(Pet pet) {
         Integer rows;
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            SQLstr = "UPDATE pet_list SET PetName = ?, Birthday = ? WHERE Id = ?";
+            SQLstr = "UPDATE pets SET name = ?, birthday = ? WHERE id = ?";
             PreparedStatement prepSt = con.prepareStatement(SQLstr);
 
             prepSt.setString(1, pet.getName());
@@ -113,7 +112,7 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
     @Override
     public void delete(Integer id) {
         try (Connection con = DriverManager.getConnection(url, user, password)) {
-            SQLstr = "DELETE FROM pet_list WHERE Id = ?";
+            SQLstr = "DELETE FROM pets WHERE id = ?";
             PreparedStatement prepSt = con.prepareStatement(SQLstr);
 
             prepSt.setInt(1, id);
