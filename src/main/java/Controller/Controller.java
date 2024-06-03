@@ -14,12 +14,14 @@ import java.time.format.DateTimeFormatter;
 public class Controller {
     private PetDatabaseService<Pet> petDatabaseService;
     private Creator creator;
-    private View<Pet> view;
+    private final View<Pet> view;
+    private Validator validator;
 
     public Controller(PetDatabaseService<Pet> petDatabaseService) {
         this.petDatabaseService = petDatabaseService;
         this.creator = new PetCreator();
         this.view = new ConsoleView();
+        this.validator = new Validator();
     }
 
     public void createPet(PetType type) {
@@ -29,7 +31,7 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate birthday = LocalDate.parse(data[1], formatter);
         try {
-            int res = petDatabaseService.create(PetCreator.createPet(type, data[0], birthday));
+            int res = petDatabaseService.create(creator.createPet(type, data[0], birthday));
             view.showMessage(String.format("%d запись добавлена", res));
         } catch (RuntimeException e) {
             view.showMessage(e.getMessage());
@@ -57,6 +59,14 @@ public class Controller {
 
     }
 
+    public void getAllPet() {
+        try {
+            view.printAll(petDatabaseService.getAll(), Pet.class);
+        } catch (RuntimeException e) {
+            view.showMessage(e.getMessage());
+        }
+    }
+
     public boolean trainPet(int id, String command) {
         try {
             if (((DataPetDatabaseService) petDatabaseService).getCommandsById(id, 1).contains(command))
@@ -74,6 +84,15 @@ public class Controller {
             view.showMessage(e.getMessage());
         }
         return false;
+    }
+
+    public Pet getById(int id) {
+        try {
+            return petDatabaseService.getById(id);
+        } catch (RuntimeException e) {
+            view.showMessage(e.getMessage());
+        }
+        return null;
     }
 
     public void delete(int id) {

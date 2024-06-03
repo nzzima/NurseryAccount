@@ -3,6 +3,7 @@ package View;
 import Model.Pet;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ConsoleView implements View {
@@ -24,14 +25,14 @@ public class ConsoleView implements View {
     }
 
     @Override
-    public <T> void printAll (List <T> list, Class <T> clazz) {
+    public void printAll (List list, Class cl) {
         System.out.print("\033[H\033[J");
         if (list.isEmpty())
             System.out.println("список пуст");
         else {
-            if (clazz == Pet.class)
+            if (cl == Pet.class)
                 System.out.println("\n          Наши питомцы:");
-            for (T item : list) {
+            for (Object item : list) {
                 System.out.println(item);
             }
         }
@@ -41,6 +42,4 @@ public class ConsoleView implements View {
     public void showMessage(String message) {
         System.out.println(message);
     }
-
-
 }

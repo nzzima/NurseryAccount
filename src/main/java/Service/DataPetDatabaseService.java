@@ -11,26 +11,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataPetDatabaseService implements PetDatabaseService<Pet> {
-    private static String url = "jdbc:postgresql://localhost:5432/postgres";
-    private static String user = "postgres";
-    private static String password = "postgres";
-    private Creator creator;
-    private Statement statement;
-    private String SQLstr;
-    private ResultSet resultSet;
+    private String url = "jdbc:postgresql://localhost:5432/postgres";
+    private  String user = "postgres";
+    private  String password = "postgres";
+    private  Creator creator;
+    private  String SQLstr;
+    private  ResultSet resultSet;
 
     public DataPetDatabaseService() {
         this.creator = new PetCreator();
     }
 
     @Override
-    public List getAll() {
+    public List<Pet> getAll() {
         List<Pet> farm = new ArrayList<Pet>();
         Pet pet;
         try (Connection con = DriverManager.getConnection(url, user, password)) {
             SQLstr = "SELECT GenusId, Id, PetName, Birthday FROM pet_list ORDER BY Id";
             PreparedStatement statement = con.prepareStatement(SQLstr);
-            resultSet = statement.executeQuery(SQLstr);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 PetType type = PetType.getType(resultSet.getInt(1));
                 Integer id = resultSet.getInt(2);
@@ -68,8 +67,8 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
                 pet.setPet_id(id);
             }
             return pet;
-        } catch (ClassNotFoundException | IOException | SQLException exception) {
-            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception));
+        } catch (SQLException exception) {
+            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception);
             throw new RuntimeException(exception.getMessage());
         }
     }
@@ -87,8 +86,8 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
 
             rows = prepSt.executeUpdate();
             return rows;
-        } catch (ClassNotFoundException | IOException | SQLException exception) {
-            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception));
+        } catch (SQLException exception) {
+            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception);
             throw new RuntimeException(exception.getMessage());
         }
     }
@@ -106,8 +105,8 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
 
             rows = prepSt.executeUpdate();
             return rows;
-        } catch (ClassNotFoundException | IOException | SQLException exception) {
-            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception));
+        } catch (SQLException exception) {
+            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception);
             throw new RuntimeException(exception.getMessage());
         }
     }
@@ -121,8 +120,8 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
             prepSt.setInt(1, id);
 
             prepSt.executeUpdate();
-        } catch (ClassNotFoundException | IOException | SQLException exception) {
-            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception));
+        } catch (SQLException exception) {
+            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception);
             throw new RuntimeException(exception.getMessage());
         }
     }
@@ -135,8 +134,8 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
             prepSt.setString(2, command);
 
             prepSt.executeUpdate();
-        } catch (ClassNotFoundException | IOException | SQLException exception) {
-            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception));
+        } catch (SQLException exception) {
+            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception);
             throw new RuntimeException(exception.getMessage());
         }
     }
@@ -161,8 +160,8 @@ public class DataPetDatabaseService implements PetDatabaseService<Pet> {
             }
 
             return commands;
-        } catch (ClassNotFoundException | IOException | SQLException exception) {
-            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception));
+        } catch (SQLException exception) {
+            Logger.getLogger(DataPetDatabaseService.class.getName()).log(Level.SEVERE, null, exception);
             throw new RuntimeException(exception.getMessage());
         }
     }
