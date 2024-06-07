@@ -6,6 +6,15 @@ public abstract class Pet {
     protected Integer pet_id;
     protected String name;
     protected LocalDate birthday;
+    protected Integer genus_id;
+
+    public Integer getGenus_id() {
+        return genus_id;
+    }
+
+    public void setGenus_id(Integer genus_id) {
+        this.genus_id = genus_id;
+    }
 
     public Integer getPet_id() {
         return pet_id;

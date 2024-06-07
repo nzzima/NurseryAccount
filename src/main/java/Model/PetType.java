@@ -11,4 +11,13 @@ public enum PetType {
             default -> null;
         };
     }
+
+    public static Integer getTypeNumber(PetType type) {
+        return switch (type) {
+            case Cat -> 1;
+            case Dog -> 2;
+            case Hamster -> 3;
+            default -> null;
+        };
+    }
 }

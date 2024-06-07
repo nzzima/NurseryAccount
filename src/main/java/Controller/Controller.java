@@ -1,23 +1,16 @@
 package Controller;
 
-import Model.Creator;
 import Model.Pet;
-import Model.PetCreator;
 import Model.PetType;
 import Service.DataPetDatabaseService;
-import Service.PetDatabaseService;
-import View.*;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Controller {
     private PetDatabaseService<Pet> petDatabaseService;
-    private Creator creator;
-    private final View<Pet> view;
-    private Validator validator;
+
 
     public Controller(PetDatabaseService<Pet> petDatabaseService) {
         this.petDatabaseService = petDatabaseService;
@@ -26,10 +19,10 @@ public class Controller {
         this.validator = new Validator();
     }
 
-    public void createPet(PetType type) throws UnsupportedEncodingException {
+    public void createPet(PetType type) {
         byte bytes[] = view.getName().getBytes(StandardCharsets.UTF_8);
         String right_name = new String(bytes, StandardCharsets.UTF_8);
-        String[] data = new String[] { right_name, view.getBirthday() };
+        String[] data = new String[] { right_name, view.getBirthday()};
         validator.validate(data);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate birthday = LocalDate.parse(data[1], formatter);
