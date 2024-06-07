@@ -8,6 +8,7 @@ public abstract class Pet {
     protected LocalDate birthday;
     protected Integer genus_id;
 
+
     public Integer getGenus_id() {
         return genus_id;
     }
@@ -46,6 +47,7 @@ public abstract class Pet {
                 "pet_id=" + pet_id +
                 ", name='" + name + '\'' +
                 ", birthday=" + birthday +
+                ", genus_id=" + genus_id +
                 '}';
     }
 }
