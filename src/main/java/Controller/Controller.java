@@ -17,6 +17,7 @@ public class Controller {
     private PetUpdateService petUpdateService;
     private PetDeleteService petDeleteService;
     private PetGetByIdService petGetByIdService;
+    private PetGetCommandsById petGetCommandsById;
     private CreatePet createPet;
     private ViewService viewService;
 
@@ -25,12 +26,14 @@ public class Controller {
                       PetCreateService petCreateService,
                       PetUpdateService petUpdateService,
                       PetDeleteService petDeleteService,
-                      PetGetByIdService petGetByIdService) {
+                      PetGetByIdService petGetByIdService,
+                      PetGetCommandsById petGetCommandsById) {
         this.petGetAllService = petGetAllService;
         this.petCreateService = petCreateService;
         this.petUpdateService = petUpdateService;
         this.petDeleteService = petDeleteService;
         this.petGetByIdService = petGetByIdService;
+        this.petGetCommandsById = petGetCommandsById;
         this.createPet = new CreatePet();
         this.viewService = new DataViewService();
     }
@@ -77,6 +80,14 @@ public class Controller {
             viewService.showMessage(e.getMessage());
         }
         return null;
+    }
+
+    public void getCommands(int id) {
+        try {
+            viewService.printComs(petGetCommandsById.getCommandsById(id));
+        } catch (RuntimeException e) {
+            viewService.showMessage(e.getMessage());
+        }
     }
 
     public void updatePet(int id) {

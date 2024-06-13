@@ -58,6 +58,14 @@ public class Menu {
                             else
                                 break;
                         }
+                    case "4":
+                        while (true) {
+                            id = idChoicePet(scanner);
+                            if (id != 0)
+                                controller.getCommands(id);
+                            else
+                                break;
+                        }
                     case "6":
                         id = idChoicePet(scanner);
                         if (id != 0)

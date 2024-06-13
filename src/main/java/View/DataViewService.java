@@ -21,7 +21,7 @@ public class DataViewService implements ViewService{
 
     @Override
     public String getBirthday() {
-        System.out.println("Введите дату рождения в формате`DD.MM.YYYY` --> ");
+        System.out.print("Введите дату рождения в формате`DD.MM.YYYY` --> ");
         return scanner.nextLine();
     }
 
@@ -32,6 +32,18 @@ public class DataViewService implements ViewService{
         else {
             System.out.println("Питомцы: ");
             for (Pet item : list) {
+                System.out.println(item);
+            }
+        }
+    }
+
+    @Override
+    public void printComs(List<String> list) {
+        if (list.isEmpty())
+            System.out.println("Список команд пуст!");
+        else {
+            System.out.println("Команды: ");
+            for (String item : list) {
                 System.out.println(item);
             }
         }
