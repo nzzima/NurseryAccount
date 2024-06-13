@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataPetCreateService implements PetCreateService{
-    private  String SQLstr;
+    private String SQLstr;
     @Override
     public Integer create(Pet pet) {
         DataPostgreSQL postgreSQLmanager = new DataPostgreSQL();
@@ -20,7 +20,7 @@ public class DataPetCreateService implements PetCreateService{
 
             statement.setString(1, pet.getName());
             statement.setDate(2, Date.valueOf(pet.getBirthday()));
-            statement.setInt(3, pet.getPet_id());
+            statement.setInt(3, pet.getGenus_id());
 
             rows = statement.executeUpdate();
             return rows;

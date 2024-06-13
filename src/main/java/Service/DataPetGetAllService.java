@@ -1,6 +1,8 @@
 package Service;
 
+import Model.CreatePet;
 import Model.Pet;
+import Model.PetType;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,28 +12,35 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataPetGetAllService implements PetGetAllService{
-    private  String SQLstr;
-    private  ResultSet resultSet;
+    private String SQLstr;
+    private ResultSet resultSet;
+    private CreatePet createPet;
+
+    public DataPetGetAllService() {
+        this.createPet = new CreatePet();
+    }
 
     @Override
     public List<Pet> getAll() {
         DataPostgreSQL postgreSQLmanager = new DataPostgreSQL();
         List<Pet> pets_data = new ArrayList<>();
+        Pet pet;
         try (Connection con = DriverManager.getConnection(postgreSQLmanager.getUrl(),
                                                           postgreSQLmanager.getUser(),
                                                           postgreSQLmanager.getPassword())) {
-            SQLstr = "SELECT name, birthday, genus_id FROM pets";
+            SQLstr = "SELECT id, name, birthday, genus_id FROM pets";
             PreparedStatement statement = con.prepareStatement(SQLstr);
             resultSet = statement.executeQuery();
-            int pet_id = 1;
             while (resultSet.next()) {
-                String name = resultSet.getString(1);
-                LocalDate birthday = resultSet.getDate(2).toLocalDate();
-                Integer genus_id = resultSet.getInt(3);
+                Integer id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                LocalDate birthday = resultSet.getDate(3).toLocalDate();
+                Integer genus_id = resultSet.getInt(4);
+                PetType type = PetType.getType(resultSet.getInt(4));
 
-                //Необходим класс для создания нового животного
+                pet = createPet.creator(id, type, name, birthday, genus_id);
+                pets_data.add(pet);
 
-                pet_id += 1;
             }
             return pets_data;
         } catch (SQLException exception) {

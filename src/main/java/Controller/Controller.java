@@ -1,110 +1,81 @@
 package Controller;
 
+import Model.CreatePet;
 import Model.Pet;
 import Model.PetType;
-import Service.DataPetDatabaseService;
+import Service.*;
+import View.DataViewService;
+import View.ViewService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Controller {
-    private PetDatabaseService<Pet> petDatabaseService;
+    private PetGetAllService petGetAllService;
+    private PetCreateService petCreateService;
+    private PetUpdateService petUpdateService;
+    private PetDeleteService petDeleteService;
+    private PetGetByIdService petGetByIdService;
+    private CreatePet createPet;
+    private ViewService viewService;
 
 
-    public Controller(PetDatabaseService<Pet> petDatabaseService) {
-        this.petDatabaseService = petDatabaseService;
-        this.creator = new PetCreator();
-        this.view = new ConsoleView();
-        this.validator = new Validator();
+    public Controller(PetGetAllService petGetAllService,
+                      PetCreateService petCreateService,
+                      PetUpdateService petUpdateService,
+                      PetDeleteService petDeleteService,
+                      PetGetByIdService petGetByIdService) {
+        this.petGetAllService = petGetAllService;
+        this.petCreateService = petCreateService;
+        this.petUpdateService = petUpdateService;
+        this.petDeleteService = petDeleteService;
+        this.petGetByIdService = petGetByIdService;
+        this.createPet = new CreatePet();
+        this.viewService = new DataViewService();
     }
 
     public void createPet(PetType type) {
-        byte bytes[] = view.getName().getBytes(StandardCharsets.UTF_8);
+        byte bytes[] = viewService.getName().getBytes(StandardCharsets.UTF_8);
         String right_name = new String(bytes, StandardCharsets.UTF_8);
-        String[] data = new String[] { right_name, view.getBirthday()};
-        validator.validate(data);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate birthday = LocalDate.parse(data[1], formatter);
-        try {
-            int res = petDatabaseService.create(creator.createPet(type, data[0], birthday));
-            view.showMessage(String.format("%d Запись добавлена", res));
-        } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
-        }
-
-    }
-
-    public void updatePet(int id) {
-
-        Pet pet = petDatabaseService.getById(id);
-        String[] data = new String[] { view.getName(), view.getBirthday() };
-
-        validator.validate(data);
+        String[] data = new String[] { right_name, viewService.getBirthday()};
+        int typeNumber = PetType.getTypeNumber(type);
+        //validator.validate(data);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate birthday = LocalDate.parse(data[1], formatter);
-        pet.setName(data[0]);
-        pet.setBirthday(birthday);
         try {
-            int res = petDatabaseService.update(pet);
-            view.showMessage(String.format("%d запись изменена \n", res));
+            int res = petCreateService.create(createPet.creator(1, type, data[0], birthday, typeNumber));
+            viewService.showMessage(String.format("%d Запись успешно добавлена", res));
         } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
+            viewService.showMessage(e.getMessage());
         }
 
     }
 
     public void getAllPet() {
         try {
-            view.printAll(petDatabaseService.getAll(), Pet.class);
+            viewService.printAll(petGetAllService.getAll());
         } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
+            viewService.showMessage(e.getMessage());
         }
     }
 
-    public boolean trainPet(int id, String command) {
+    public void delete(Integer petID) {
         try {
-            if (((DataPetDatabaseService) petDatabaseService).getCommandsById(id, 1).contains(command))
-                view.showMessage("это мы уже умеем");
-            else {
-                if (!((DataPetDatabaseService) petDatabaseService).getCommandsById(id, 2).contains(command))
-                    view.showMessage("невыполнимая команда");
-                else {
-                    ((DataPetDatabaseService) petDatabaseService).train(id, command);
-                    view.showMessage("команда разучена\n");
-                    return true;
-                }
-            }
+            petDeleteService.delete(petID);
+            viewService.showMessage("Запись успешно удалена");
         } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
+            viewService.showMessage(e.getMessage());
         }
-        return false;
     }
 
     public Pet getById(int id) {
         try {
-            return petDatabaseService.getById(id);
+            return petGetByIdService.getById(id);
         } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
+            viewService.showMessage(e.getMessage());
         }
         return null;
-    }
-
-    public void delete(int id) {
-        try {
-            petDatabaseService.delete(id);
-            view.showMessage("запись удалена");
-        } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
-        }
-    }
-
-    public void getCommands(int id) {
-        try {
-            view.printAll(((DataPetDatabaseService) petDatabaseService).getCommandsById(id, 1), String.class);
-        } catch (RuntimeException e) {
-            view.showMessage(e.getMessage());
-        }
     }
 }
