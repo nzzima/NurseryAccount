@@ -18,6 +18,7 @@ public class Controller {
     private PetDeleteService petDeleteService;
     private PetGetByIdService petGetByIdService;
     private PetGetCommandsById petGetCommandsById;
+    private PetTrainCommand petTrainCommand;
     private CreatePet createPet;
     private ViewService viewService;
 
@@ -27,13 +28,15 @@ public class Controller {
                       PetUpdateService petUpdateService,
                       PetDeleteService petDeleteService,
                       PetGetByIdService petGetByIdService,
-                      PetGetCommandsById petGetCommandsById) {
+                      PetGetCommandsById petGetCommandsById,
+                      PetTrainCommand petTrainCommand) {
         this.petGetAllService = petGetAllService;
         this.petCreateService = petCreateService;
         this.petUpdateService = petUpdateService;
         this.petDeleteService = petDeleteService;
         this.petGetByIdService = petGetByIdService;
         this.petGetCommandsById = petGetCommandsById;
+        this.petTrainCommand = petTrainCommand;
         this.createPet = new CreatePet();
         this.viewService = new DataViewService();
     }
@@ -88,6 +91,21 @@ public class Controller {
         } catch (RuntimeException e) {
             viewService.showMessage(e.getMessage());
         }
+    }
+
+    public boolean trainPet(int id, String command) {
+        try {
+            if (petGetCommandsById.getCommandsById(id).contains(command))
+                viewService.showMessage("\nЭто команда уже изучена!");
+            else {
+                petTrainCommand.train(id, command);
+                viewService.showMessage("Команда изучена!\n");
+                return true;
+            }
+        } catch (RuntimeException e) {
+            viewService.showMessage(e.getMessage());
+        }
+        return false;
     }
 
     public void updatePet(int id) {

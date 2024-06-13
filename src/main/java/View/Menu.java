@@ -20,6 +20,7 @@ public class Menu {
         try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
             boolean flag = true;
             int id;
+            String command;
             while (flag) {
                 System.out.println("\n1) Список всех животных" +
                                    "\n2) Завести новое животное" +
@@ -66,6 +67,12 @@ public class Menu {
                             else
                                 break;
                         }
+                    case "5":
+                        id = idChoicePet(scanner);
+                        command = scanner.nextLine();
+                        if (id != 0)
+                            controller.trainPet(id, command);
+                        break;
                     case "6":
                         id = idChoicePet(scanner);
                         if (id != 0)

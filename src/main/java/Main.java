@@ -10,7 +10,8 @@ public class Main {
         PetGetByIdService getByIdService = new DataPetGetByIdService();
         PetUpdateService updateService = new DataPetUpdateService();
         PetGetCommandsById getCommandsById = new DataPetGetCommandsById();
-        Controller controller = new Controller(getAllService, createService, updateService, deleteService, getByIdService, getCommandsById);
+        PetTrainCommand trainCommand = new DataPetTrainCommand();
+        Controller controller = new Controller(getAllService, createService, updateService, deleteService, getByIdService, getCommandsById, trainCommand);
         new Menu(controller).start();
     }
 }
