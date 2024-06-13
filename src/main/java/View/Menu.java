@@ -46,6 +46,18 @@ public class Menu {
                             }
                         }
                         break;
+                    case "3":
+                        while (true) {
+                            id = idChoicePet(scanner);
+                            if (id != 0)
+                                try {
+                                    controller.updatePet(id);
+                                } catch (UncorrectDataException e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            else
+                                break;
+                        }
                     case "6":
                         id = idChoicePet(scanner);
                         if (id != 0)

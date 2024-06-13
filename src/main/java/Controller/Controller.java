@@ -78,4 +78,21 @@ public class Controller {
         }
         return null;
     }
+
+    public void updatePet(int id) {
+        Pet pet = getById(id);
+        String data[] = new String[] {viewService.getName(), viewService.getBirthday()};
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate birthday = LocalDate.parse(data[1], formatter);
+        pet.setName(data[0]);
+        pet.setBirthday(birthday);
+
+        try {
+            int res = petUpdateService.update(pet);
+            viewService.showMessage(String.format("%d Запись успешно изменена! \n", res));
+        } catch (RuntimeException e) {
+            viewService.showMessage(e.getMessage());
+        }
+    }
 }
